@@ -1,0 +1,32 @@
+.table {
+  width: 100%;
+}
+
+.canvasContainer, .textContainer{
+  display: flex;
+  margin: auto;
+  width: 100%;
+}
+
+.controlContainer {
+  display: block;
+}
+
+canvas, textarea {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+textarea {
+  resize: none;
+}
+
+p {
+  text-align: center;
+  font-weight: bold;
+}
+
+button {
+  width: 4rem;
+  height: 1.5rem;;
+}
