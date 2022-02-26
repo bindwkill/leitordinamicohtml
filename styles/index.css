@@ -2,10 +2,26 @@
   width: 100%;
 }
 
-.canvasContainer, .textContainer{
+.centering {
+  text-align: center;
+  font-size: 1rem;
+}
+
+.canvasContainer{
+  display: flex;
+  background-color: white;
+  margin: auto;
+  margin-top: 2rem;
+  width: 80%;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+}
+
+.textContainer{
   display: flex;
   margin: auto;
-  width: 100%;
+  width: 80%;
 }
 
 .controlContainer {
@@ -26,7 +42,9 @@ p {
   font-weight: bold;
 }
 
-button {
-  width: 4rem;
-  height: 1.5rem;;
-}
+body {
+  background-image: url("../img/Lorem-Ipsum-bg.jpg");
+  background-blend-mode:lighten;
+  background-position: center;
+  background-color: whitesmoke;
+ }

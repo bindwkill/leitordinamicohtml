@@ -1,25 +1,28 @@
-var hello = "Hello World" //Texto de boas vindas
-var timing; //velocidade com que as palavras são trocadas na tela
-var textVector = [];//Vetor com todas as palavras do texto inserido
-var ctx;// guarda o 'contexto' especifico do canvas do html
-var Exec;// 'Execução' guarda referencia ao 'setInterval'
-var width; // guarda a largura do canvas
-var height; // guarda a altura do canvas
-var fontSize; //tamanho de fonte
-var paused; //flag para quando a execução estiver pausada
+const hello = "Hello World" //Texto de boas vindas
+let timing; //velocidade com que as palavras são trocadas na tela
+let textVector = [];//Vetor com todas as palavras do texto inserido
+let Exec;// 'Execução' guarda referencia ao 'setInterval'
+let fontSize; //tamanho de fonte
+let paused; //flag para quando a execução estiver pausada
 
-//inicia a aplicação da pagina
-function init() {
-  let canvas = document.getElementById("render");
-  ctx = canvas.getContext("2d");
-  width = canvas.width;
-  height = canvas.height;
+const canvas = document.getElementById("render");
+const ctx = canvas.getContext("2d");// guarda o 'contexto' especifico do canvas do html
+const width = canvas.width;// guarda a largura do canvas
+const height = canvas.height;// guarda a altura do canvas
 
-  fontOptions();
-  clearCanvas();
-  writeCanvas(hello);
-  onRunDisabledElements(false);
-}
+const play_pauseButton = document.getElementById("play_pauseButton")//botão iniciar-pausar
+const stopButton = document.getElementById("stopButton")//botão parar
+const clearButton = document.getElementById("clearButton")//botão limpar
+const helpButton = document.getElementById("helpButton")//botão limpar
+
+const wordSpeed = document.getElementById("wpm")//campo 'palavras por min'
+const fontSizeElement = document.getElementById("fonts");//campo tamanho da fonte
+const textArea = document.getElementById("fonte")//textarea
+
+fontOptions();
+clearCanvas();
+writeCanvas(hello);
+onRunDisabledElements(false);
 
 //limpa o canvas
 function clearCanvas() {
@@ -27,8 +30,8 @@ function clearCanvas() {
   ctx.clearRect(0, 0, width, height);
   // Cria uma linha vermelha no meio do canvas
   ctx.strokeStyle = "red";
-  ctx.moveTo(Math.floor(width / 2), 60);
-  ctx.lineTo(Math.floor(width / 2), height - 60);
+  ctx.moveTo(Math.floor(width / 2), 20);
+  ctx.lineTo(Math.floor(width / 2), height - 20);
   ctx.stroke();
 }
 
@@ -55,7 +58,7 @@ function valideWpm() {
 //inicia a execução
 function runText() {
   valideWpm();
-  paused = false;
+  pauseText(false);
   textVector = document.getElementById("fonte").value.split(" ");
   //por algum motivo, sempre tem pelo menos 1 elemento nesse vetor...
   if (textVector.length > 1) {
@@ -65,6 +68,7 @@ function runText() {
   else {
     clearCanvas();
     writeCanvas(hello);
+    play_pauseButton.setAttribute("src", "img/play.png")
   }
 }
 
@@ -82,17 +86,39 @@ function scrollText() {
 }
 
 //muda a flag de pause
-function pauseText() {
-  paused = !paused;
+function pauseText(value = !paused) {
+  paused = value;
 }
+
+function togglePlay() {
+  if (!Exec) {
+    play_pauseButton.setAttribute("src", "img/pause.png")
+    runText()
+  }
+  else {
+    pauseText()
+    if (paused) {
+      play_pauseButton.setAttribute("src", "img/play.png")
+    }
+    else {
+      play_pauseButton.setAttribute("src", "img/pause.png")
+    }
+  }
+}
+
+
 
 //para completamente a execução
 function stopText() {
   clearInterval(Exec);
+  Exec = null
+  pauseText(true)
+  play_pauseButton.setAttribute("src", "img/play.png")
   onRunDisabledElements(false);
   if (textVector.length > 1) {
     clearCanvas();
     writeCanvas(hello);
+    textVector = []
   }
 }
 
@@ -111,7 +137,7 @@ function fontOptions() {
 
 //limpa o textarea
 function clearText() {
-  document.getElementById("fonte").value = "";
+  textArea.textContent = "";
   clearCanvas();
   writeCanvas(hello);
 }
@@ -125,13 +151,17 @@ function changeFontSize() {
 
 //habilita/desabilita todos os elementos para a execução
 function onRunDisabledElements(isRunning) {
-  document.getElementById("run").disabled = isRunning;//botão iniciar
-  document.getElementById("clear").disabled = isRunning;//botão limpar
+  stopButton.disabled = !isRunning;
 
-  document.getElementById("stop").disabled = !isRunning;//botão parar
-  document.getElementById("pause").disabled = !isRunning;//botão pausar
+  clearButton.disabled = isRunning;
+  helpButton.disabled = isRunning;
+  wordSpeed.disabled = isRunning;
+  fontSizeElement.disabled = isRunning;
+  textArea.disabled = isRunning;
+}
 
-  document.getElementById("wpm").disabled = isRunning;//campo 'palavras por min'
-  document.getElementById("fonts").disabled = isRunning;//campo tamanho da fonte
-  document.getElementById("fonte").disabled = isRunning;//textarea
+function helpText() {
+  console.debug("passou por aqui")
+  textArea.textContent = "Esta técnica permite que você não precise deslocar os olhos enquanto lê, o que permite uma leitura muito mais rápida que o comum, sem deixar de compreender o que está sendo lido."
+  togglePlay()
 }

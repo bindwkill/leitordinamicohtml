@@ -3,44 +3,43 @@
 <head>
   <link rel="stylesheet" href="styles/index.css">
   <title>\\ Leitor //</title>
-  <script src="src/index.js">
-
-  </script>
-
 </head>
 
-<body onload="init()">
+<body>
 
   <div class="Table">
     <div class=canvasContainer>
-      <canvas id="render" class='render' width=720 height=320></canvas>
+      <canvas id="render" class='render' width=1024 height=256 loading="lazy"></canvas>
     </div>
 
     <div class='controlContainer'>
+
       <p>Palavras por minuto:
-        <input type="text" id="wpm" size=3 value=250 />
+        <input type="text" class="centering" id="wpm" size=3 value=250 />
       </p>
 
       <p>Tamanho da fonte:
-        <select id="fonts" onChange="changeFontSize()"></select>
+        <select id="fonts" class="centering" onChange="changeFontSize()"></select>
       </p>
 
       <p>
-        <button id="run" type="button" onclick="runText()">Iniciar</button>
-        <button id="pause" type="button" onclick="pauseText()">Pausar</button>
-        <button id="stop" type="button" onclick="stopText()">Parar</button>
-        <button id="clear" type="button" onclick="clearText()">Limpar</button>
+        <input id="play_pauseButton" width="64px" class="button" type="image" src="img/play.png"
+          onclick="togglePlay()"></input>
+        <input id="stopButton" width="64px" class="button" type="image" src="img/stop.png" onclick="stopText()"></input>
+        <input id="clearButton" width="64px" class="button" type="image" src="img/clear.png"
+          onclick="clearText()"></input>
+        <input id="helpButton" width="64px" class="button" type="image" src="img/help.png" onclick="helpText()"></input>
       </p>
 
 
     </div>
 
     <div class="textContainer">
-      <textarea id="fonte" rows=30 cols=100></textarea>
+      <textarea id="fonte" rows=30 cols=100 placeholder="Cole aqui o texto que você quer ler com rapidez"></textarea>
     </div>
 
   </div>
-
+  <script src="src/index.js"></script>
 </body>
 
 </html
