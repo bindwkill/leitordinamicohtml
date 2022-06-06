@@ -7,7 +7,7 @@
   font-size: 1rem;
 }
 
-.canvasContainer{
+.canvasContainer {
   display: flex;
   background-color: white;
   margin: auto;
@@ -18,7 +18,11 @@
   border-color: black;
 }
 
-.textContainer{
+.render {
+  width: 100%
+}
+
+.textContainer {
   display: flex;
   margin: auto;
   width: 80%;
@@ -28,7 +32,8 @@
   display: block;
 }
 
-canvas, textarea {
+canvas,
+textarea {
   margin-left: auto;
   margin-right: auto;
 }
@@ -44,7 +49,7 @@ p {
 
 body {
   background-image: url("../img/Lorem-Ipsum-bg.jpg");
-  background-blend-mode:lighten;
+  background-blend-mode: lighten;
   background-position: center;
   background-color: whitesmoke;
- }
+}

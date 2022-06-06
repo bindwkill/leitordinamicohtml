@@ -2,44 +2,41 @@
 
 <head>
   <link rel="stylesheet" href="styles/index.css">
-  <title>\\ Leitor //</title>
+  <title>\\ Leitura dinâmico//</title>
 </head>
 
 <body>
 
   <div class="Table">
     <div class=canvasContainer>
-      <canvas id="render" class='render' width=1024 height=256 loading="lazy"></canvas>
+      <canvas data-id="render" class='render' width="1024" height="320"></canvas>
     </div>
 
     <div class='controlContainer'>
 
       <p>Palavras por minuto:
-        <input type="text" class="centering" id="wpm" size=3 value=250 />
+        <input type="text" class="centering" data-id="words_per_minute" size=3 value=250 />
       </p>
 
       <p>Tamanho da fonte:
-        <select id="fonts" class="centering" onChange="changeFontSize()"></select>
+        <select data-id="font_sizes" class="centering"></select>
       </p>
 
       <p>
-        <input id="play_pauseButton" width="64px" class="button" type="image" src="img/play.png"
-          onclick="togglePlay()"></input>
-        <input id="stopButton" width="64px" class="button" type="image" src="img/stop.png" onclick="stopText()"></input>
-        <input id="clearButton" width="64px" class="button" type="image" src="img/clear.png"
-          onclick="clearText()"></input>
-        <input id="helpButton" width="64px" class="button" type="image" src="img/help.png" onclick="helpText()"></input>
+        <input data-id="play_pauseButton" width="64px" class="button" type="image" src="img/play.png"></input>
+        <input data-id="stopButton" width="64px" class="button" type="image" src="img/stop.png"></input>
+        <input data-id="clearButton" width="64px" class="button" type="image" src="img/clear.png"></input>
+        <input data-id="helpButton" width="64px" class="button" type="image" src="img/help.png"></input>
       </p>
-
-
     </div>
 
     <div class="textContainer">
-      <textarea id="fonte" rows=30 cols=100 placeholder="Cole aqui o texto que você quer ler com rapidez"></textarea>
+      <textarea data-id="inputText" rows=30 cols=100
+        placeholder="Cole aqui o texto que você quer ler com rapidez"></textarea>
     </div>
 
   </div>
-  <script src="src/index.js"></script>
+  <script type='module' src="./src/index.js"></script>
 </body>
 
 </html

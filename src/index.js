@@ -1,88 +1,74 @@
-const hello = "Hello World" //Texto de boas vindas
-let timing; //velocidade com que as palavras são trocadas na tela
-let textVector = [];//Vetor com todas as palavras do texto inserido
+import { Display } from './display.js'
+
+let textArray = [];//Vetor com todas as palavras do texto inserido
 let Exec;// 'Execução' guarda referencia ao 'setInterval'
-let fontSize; //tamanho de fonte
 let paused; //flag para quando a execução estiver pausada
 
-const canvas = document.getElementById("render");
-const ctx = canvas.getContext("2d");// guarda o 'contexto' especifico do canvas do html
-const width = canvas.width;// guarda a largura do canvas
-const height = canvas.height;// guarda a altura do canvas
+const canvas = Display(document.querySelector("[data-id=render]"));
+const play_pauseButton = document.querySelector("[data-id=play_pauseButton]");//botão iniciar-pausar
+const stopButton = document.querySelector("[data-id=stopButton]");//botão parar
+const clearButton = document.querySelector("[data-id=clearButton]");//botão limpar
+const helpButton = document.querySelector("[data-id=helpButton]");//botão help
 
-const play_pauseButton = document.getElementById("play_pauseButton")//botão iniciar-pausar
-const stopButton = document.getElementById("stopButton")//botão parar
-const clearButton = document.getElementById("clearButton")//botão limpar
-const helpButton = document.getElementById("helpButton")//botão limpar
+const fontSizeComboBox = document.querySelector("[data-id=font_sizes]");//campo tamanho da fonte
+const wordsPerMinute = document.querySelector("[data-id=words_per_minute]");//campo velocidade das palavras
+const inputText = document.querySelector("[data-id=inputText]");//textarea
 
-const wordSpeed = document.getElementById("wpm")//campo 'palavras por min'
-const fontSizeElement = document.getElementById("fonts");//campo tamanho da fonte
-const textArea = document.getElementById("fonte")//textarea
+//inicializa os tamanhos de fonte como múltiplos de 16px
+(function () {
+  for (let i = 1; i <= 10; i++) {
+    const option = document.createElement("option");
+    option.text = i * 16;
+    fontSizeComboBox.add(option);
+  }
+  //tamanho inicial padrão
+  fontSizeComboBox.selectedIndex = "4";
+  canvas.setFontSize(fontSizeComboBox.value);
+})();
 
-fontOptions();
-clearCanvas();
-writeCanvas(hello);
-onRunDisabledElements(false);
-
-//limpa o canvas
-function clearCanvas() {
-  //Limpa toda a area do Canvas
-  ctx.clearRect(0, 0, width, height);
-  // Cria uma linha vermelha no meio do canvas
-  ctx.strokeStyle = "red";
-  ctx.moveTo(Math.floor(width / 2), 20);
-  ctx.lineTo(Math.floor(width / 2), height - 20);
-  ctx.stroke();
-}
-
-//escreve no canvas
-function writeCanvas(texto) {
-  //alinha texto e exibe
-  ctx.font = (fontSize + "px Arial");
-  ctx.textAlign = "center";
-  ctx.fillText(texto, Math.floor(width / 2), Math.floor(height / 2) + Math.floor(fontSize / 3));
-}
+canvas.clear();
+canvas.write("Hello World");
+toggleActiveElements(false);
 
 //valida o valor digitado para 'palavras por minuto'
-//wpm words per minute - palavras por minuto
-function valideWpm() {
-  if (document.getElementById("wpm").value > 0) {
-    timing = 60000 / document.getElementById("wpm").value;
+function valideWordSpeed() {
+  if (wordsPerMinute.value > 0) {
+    return 60000 / wordsPerMinute.value;
   }
-  else {
-    timing = 250;//velocidade padrão
-    document.getElementById("wpm").value = timing;
-  }
+  //velocidade padrão
+  wordsPerMinute.value = 250;
+  return 250;
 }
 
 //inicia a execução
 function runText() {
-  valideWpm();
+  const timing = valideWordSpeed();
   pauseText(false);
-  textVector = document.getElementById("fonte").value.split(" ");
+  textArray = inputText.value.split(" ");
+
   //por algum motivo, sempre tem pelo menos 1 elemento nesse vetor...
-  if (textVector.length > 1) {
-    onRunDisabledElements(true);
-    Exec = setInterval("scrollText()", timing);
+  if (textArray.length > 1) {
+    toggleActiveElements(true);
+
+    Exec = setInterval(shiftArrayText, timing);
+    return
   }
-  else {
-    clearCanvas();
-    writeCanvas(hello);
-    play_pauseButton.setAttribute("src", "img/play.png")
-  }
+
+  canvas.clear();
+  canvas.write("Hello World");
+  play_pauseButton.setAttribute("src", "img/play.png");
 }
 
-//faz o texto avançar
-function scrollText() {
-  if (!paused) {
-    if (textVector.length > 0) {
-      clearCanvas();
-      writeCanvas(textVector.shift());
+//exibe uma palavra e remove ela da fila
+const shiftArrayText = () => {
+  if (textArray.length > 0) {
+    if (!paused) {
+      canvas.clear();
+      canvas.write(textArray.shift());
     }
-    else {
-      stopText();
-    }
+    return
   }
+  stopText();
 }
 
 //muda a flag de pause
@@ -92,76 +78,59 @@ function pauseText(value = !paused) {
 
 function togglePlay() {
   if (!Exec) {
-    play_pauseButton.setAttribute("src", "img/pause.png")
-    runText()
+    play_pauseButton.setAttribute("src", "img/pause.png");
+    runText();
+    return
   }
-  else {
-    pauseText()
-    if (paused) {
-      play_pauseButton.setAttribute("src", "img/play.png")
-    }
-    else {
-      play_pauseButton.setAttribute("src", "img/pause.png")
-    }
-  }
+  pauseText()
+  const iconSource = paused ? "img/play.png" : "img/pause.png";
+  play_pauseButton.setAttribute("src", iconSource);
 }
-
-
 
 //para completamente a execução
 function stopText() {
   clearInterval(Exec);
-  Exec = null
+  Exec = null;
   pauseText(true)
-  play_pauseButton.setAttribute("src", "img/play.png")
-  onRunDisabledElements(false);
-  if (textVector.length > 1) {
-    clearCanvas();
-    writeCanvas(hello);
-    textVector = []
+  play_pauseButton.setAttribute("src", "img/play.png");
+  toggleActiveElements(false);
+  if (textArray.length > 1) {
+    canvas.clear();
+    canvas.write("Hello World");
+    textArray = [];
   }
-}
-
-//inicializa os tamanhos de fonte como múltiplos de 16px
-function fontOptions() {
-  let box = document.getElementById("fonts")
-  let option;
-  for (let i = 1; i <= 10; i++) {
-    option = document.createElement("option")
-    option.text = i * 16;
-    box.add(option);
-  }
-  box.selectedIndex = "4";//tamanho inicial padrão;
-  changeFontSize();
 }
 
 //limpa o textarea
 function clearText() {
-  textArea.textContent = "";
-  clearCanvas();
-  writeCanvas(hello);
-}
-
-//função chamada quando troca o tamanho de fonte
-function changeFontSize() {
-  fontSize = document.getElementById("fonts").value;
-  clearCanvas();
-  writeCanvas(hello);
+  inputText.textContent = "";
+  wordsPerMinute.value = 250;
+  canvas.clear();
+  canvas.write("Hello World");
 }
 
 //habilita/desabilita todos os elementos para a execução
-function onRunDisabledElements(isRunning) {
+function toggleActiveElements(isRunning) {
   stopButton.disabled = !isRunning;
-
   clearButton.disabled = isRunning;
   helpButton.disabled = isRunning;
-  wordSpeed.disabled = isRunning;
-  fontSizeElement.disabled = isRunning;
-  textArea.disabled = isRunning;
+  wordsPerMinute.disabled = isRunning;
+  fontSizeComboBox.disabled = isRunning;
+  inputText.disabled = isRunning;
 }
 
 function helpText() {
-  console.debug("passou por aqui")
-  textArea.textContent = "Esta técnica permite que você não precise deslocar os olhos enquanto lê, o que permite uma leitura muito mais rápida que o comum, sem deixar de compreender o que está sendo lido."
-  togglePlay()
+  inputText.textContent = "Esta técnica permite que você não precise deslocar os olhos enquanto lê, o que permite uma leitura muito mais rápida que o comum, sem deixar de compreender o que está sendo lido."
+  togglePlay();
 }
+
+play_pauseButton.addEventListener('click', togglePlay)
+stopButton.addEventListener('click', stopText)
+clearButton.addEventListener('click', clearText)
+helpButton.addEventListener('click', helpText)
+
+fontSizeComboBox.addEventListener('change', event => {
+  canvas.setFontSize(event.target.value);
+  canvas.clear();
+  canvas.write("Hello World");
+})
