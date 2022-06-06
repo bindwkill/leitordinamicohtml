@@ -19,7 +19,8 @@
 }
 
 .render {
-  width: 100%
+  width: 100%;
+  max-width: 960px;
 }
 
 .textContainer {
@@ -40,6 +41,7 @@ textarea {
 
 textarea {
   resize: none;
+  width: 100%;
 }
 
 p {
